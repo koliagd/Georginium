@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Джорджиниум | Фандом вселенной Джорджей</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .tab {
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .tab.active {
+            transform: translateY(-10px) rotateX(10deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .character-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .character-card:hover {
+            transform: scale(1.03) rotateY(5deg);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .map-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .map-tooltip {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .custom-george {
+            position: relative;
+        }
+
+        .custom-george::after {
+            content: "✏️";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fef3c7;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg floating">
+                        <i class="fas fa-apple-alt text-3xl text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Джорджиниум</h1>
+                        <p class="text-blue-100">Фандом вселенной Джорджей</p>
+                    </div>
+                </div>
+                <nav class="flex space-x-6">
+                    <a href="#home" class="nav-link active text-white font-medium">Главная</a>
+                    <a href="#characters" class="nav-link text-white font-medium">Джорджи</a>
+                    <a href="epland.html" class="nav-link text-white font-medium">Эпланд</a>
+                    <a href="create_george.html" class="nav-link text-white font-medium">Создать Джорджа</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="py-16 bg-gradient-to-b from-blue-50 to-purple-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Добро пожаловать в мир <span class="text-purple-600">Джорджей</span></h2>
+                    <p class="text-lg text-gray-600 mb-8">Откройте для себя удивительных жителей страны Эпланд. Узнайте их предпочтения, страхи и уникальные особенности.</p>
+                    <div class="flex space-x-4">
+                        <a href="#characters" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                            Исследовать Джорджей
+                        </a>
+                        <a href="epland.html" class="bg-white hover:bg-gray-100 text-purple-600 font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105 border border-purple-200">
+                            Карта Эпланда
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-400 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="relative bg-white p-6 rounded-2xl shadow-xl transform rotate-2">
+                            <div class="bg-gradient-to-r from-blue-400 to-purple-500 p-1 rounded-lg mb-4">
+                                <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Джорджи" alt="Джорджи" class="w-full h-auto rounded-lg">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800">Синий Джордж</h3>
+                                    <p class="text-gray-600">Президент Эпланда</p>
+                                </div>
+                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                    IQ: 15.2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section id="characters" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Все Джорджи Эпланда</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
+                    <input type="text" id="searchGeorge" placeholder="Поиск Джорджа..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 w-full md:w-1/2">
+                    <div class="flex space-x-2">
+                        <button id="filterAll" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Все</button>
+                        <button id="filterOfficial" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Официальные</button>
+                        <button id="filterCustom" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Созданные</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap justify-center gap-4 mb-10">
+                <button class="tab px-6 py-3 bg-blue-100 text-blue-800 rounded-full font-medium transition-all duration-300 hover:bg-blue-200 active" data-tab="blue">
+                    Синий Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-yellow-100 text-yellow-800 rounded-full font-medium transition-all duration-300 hover:bg-yellow-200" data-tab="yellow">
+                    Жёлтый Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-gray-100 text-gray-800 rounded-full font-medium transition-all duration-300 hover:bg-gray-200" data-tab="why">
+                    Джордж "Зачем"
+                </button>
+                <button class="tab px-6 py-3 bg-red-100 text-red-800 rounded-full font-medium transition-all duration-300 hover:bg-red-200" data-tab="dontbelieve">
+                    Джордж "Не Верю"
+                </button>
+                <button class="tab px-6 py-3 bg-green-100 text-green-800 rounded-full font-medium transition-all duration-300 hover:bg-green-200" data-tab="green">
+                    Зелёный Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-orange-100 text-orange-800 rounded-full font-medium transition-all duration-300 hover:bg-orange-200" data-tab="orange">
+                    Оранжевый Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-gray-200 text-gray-800 rounded-full font-medium transition-all duration-300 hover:bg-gray-300" data-tab="white">
+                    Белый Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-gray-800 text-white rounded-full font-medium transition-all duration-300 hover:bg-gray-700" data-tab="black">
+                    Чёрный Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-pink-100 text-pink-800 rounded-full font-medium transition-all duration-300 hover:bg-pink-200" data-tab="raspberry">
+                    Малиновый Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-red-200 text-red-900 rounded-full font-medium transition-all duration-300 hover:bg-red-300" data-tab="red">
+                    Красный Джордж
+                </button>
+                <button class="tab px-6 py-3 bg-purple-200 text-purple-900 rounded-full font-medium transition-all duration-300 hover:bg-purple-300" data-tab="proofs">
+                    Джордж "Пруфы Выкини"
+                </button>
+            </div>
+
+            <!-- Tabs Content -->
+            <div class="bg-gray-50 rounded-2xl p-8 shadow-inner">
+                <!-- Blue George Tab -->
+                <div id="blue" class="tab-content active">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-blue-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Синий Джордж</h3>
+                                    <p class="text-blue-100">Президент Эпланда</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-blue-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">6 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Красные яблоки</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Морковь</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-blue-500 mr-2"></i> 15.2</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Синий Джордж — основатель и действующий президент страны Эпланд. Он основал страну 3 февраля 2021 года и с тех пор управляет ею из столицы Ухватск.</p>
+                                <h4 class="text-xl font-semibold text-gray-700 mb-3">Интересные факты</h4>
+                                <ul class="space-y-2 text-gray-600 mb-6">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Несмотря на низкий IQ, успешно управляет страной уже несколько лет.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Избегает посещения Оранжевого Джорджа из-за его любви к моркови.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Его любимые красные яблоки выращиваются в Яблочной области.</span>
+                                    </li>
+                                </ul>
+                                <a href="blue_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yellow George Tab -->
+                <div id="yellow" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-yellow-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Жёлтый Джордж</h3>
+                                    <p class="text-yellow-100">Главный советник</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-yellow-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-yellow-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">8 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Бананы</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Глупость</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-yellow-500 mr-2"></i> 210</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Жёлтый Джордж — самый умный житель Эпланда с IQ 210. Он служит главным советником Синего Джорджа и отвечает за научные разработки в стране.</p>
+                                <h4 class="text-xl font-semibold text-gray-700 mb-3">Интересные факты</h4>
+                                <ul class="space-y-2 text-gray-600 mb-6">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Разработал систему управления для страны с учетом низкого IQ президента.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Импортирует бананы из соседних стран, так как в Эпланде они не растут.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                        <span>Часто конфликтует с Джорджем "Зачем" из-за его глупых вопросов.</span>
+                                    </li>
+                                </ul>
+                                <a href="yellow_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why George Tab -->
+                <div id="why" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-gray-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Джордж "Зачем"</h3>
+                                    <p class="text-gray-200">Философ</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-question text-6xl text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">6 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Ответы на вопрос "Зачем?"</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Неизвестно</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-gray-500 mr-2"></i> 20</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Джордж "Зачем" — философ Эпланда, который постоянно задаёт один и тот же вопрос. Он живёт в деревне Тишино в Пустоши Вопросов.</p>
+                                <h4 class="text-xl font-semibold text-gray-700 mb-3">Известные вопросы</h4>
+                                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                                    <div class="space-y-3">
+                                        <div class="flex items-start">
+                                            <div class="bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                                <i class="fas fa-question text-gray-600"></i>
+                                            </div>
+                                            <p class="text-gray-700">"Зачем я здесь?"</p>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <div class="bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                                <i class="fas fa-question text-gray-600"></i>
+                                            </div>
+                                            <p class="text-gray-700">"Зачем существуют яблоки?"</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="why_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Don't Believe George Tab -->
+                <div id="dontbelieve" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-red-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Джордж "Не Верю"</h3>
+                                    <p class="text-red-100">Скептик</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-red-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user-slash text-6xl text-red-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">?</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Не верить</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Ничего</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Особенности:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-infinity text-purple-500 mr-2"></i> Бессмертный</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Джордж "Не Верю" — скептик, живущий в деревне Неверово. Он не верит ни во что, даже в смерть.</p>
+                                <a href="dontbelieve_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Green George Tab -->
+                <div id="green" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-green-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Зелёный Джордж</h3>
+                                    <p class="text-green-100">Друг Белого Джорджа</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-green-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">5 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Траву</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Яблоки и морковь</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-green-500 mr-2"></i> 15.3</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Зелёный Джордж — друг Белого Джорджа. Он любит траву и боится яблок и моркови.</p>
+                                <a href="green_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orange George Tab -->
+                <div id="orange" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-orange-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Оранжевый Джордж</h3>
+                                    <p class="text-orange-100">Любитель моркови</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-orange-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-orange-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">6 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Морковь</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Яблоки</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-orange-500 mr-2"></i> 25</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Оранжевый Джордж — любитель моркови, живущий в Эпланде. Он боится яблок и часто конфликтует с Синим Джорджем.</p>
+                                <a href="orange_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- White George Tab -->
+                <div id="white" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-gray-200 p-4 text-gray-800 text-center">
+                                    <h3 class="text-2xl font-bold">Белый Джордж</h3>
+                                    <p class="text-gray-600">Друг Зелёного Джорджа</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">5.7 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Майонез</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Щавель</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">IQ:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-brain text-gray-500 mr-2"></i> 19</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Белый Джордж — друг Зелёного Джорджа. Он любит майонез и боится щавеля.</p>
+                                <a href="white_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Black George Tab -->
+                <div id="black" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-gray-800 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Чёрный Джордж</h3>
+                                    <p class="text-gray-300">Любитель денег</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-gray-800"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                            <p class="text-gray-600">5 лет</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Деньги</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Долги</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Чёрный Джордж — любитель денег, живущий в Кремневике. Он боится долгов.</p>
+                                <a href="black_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Raspberry George Tab -->
+                <div id="raspberry" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-pink-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Малиновый Джордж</h3>
+                                    <p class="text-pink-100">Губернатор Малиновой области</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-pink-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-pink-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Малину</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Лавы</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Особенности:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-robot text-purple-500 mr-2"></i> Костюм Железного человека (малиновый)</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> Бобр</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Малиновый Джордж — губернатор Малиновой области. Он любит малину, боится лавы и носит малиновый костюм Железного человека.</p>
+                                <a href="raspberry_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Red George Tab -->
+                <div id="red" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-red-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Красный Джордж</h3>
+                                    <p class="text-red-100">Пародист Синего</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-red-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-red-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Яблоки</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Боится:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Морковки</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> k3</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Красный Джордж — пародист Синего Джорджа. Он живёт в Фырдаграде и любит яблоки.</p>
+                                <a href="red_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proofs George Tab -->
+                <div id="proofs" class="tab-content">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3">
+                            <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg">
+                                <div class="bg-purple-500 p-4 text-white text-center">
+                                    <h3 class="text-2xl font-bold">Джордж "Пруфы Выкини"</h3>
+                                    <p class="text-purple-100">Слуга Морковь Морковича</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex justify-center mb-4">
+                                        <div class="w-32 h-32 bg-purple-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user text-6xl text-purple-500"></i>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Любит:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Слушаться Морковь Морковича</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-700">Автор:</h4>
+                                            <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> Бобр</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-2/3">
+                            <div class="bg-white rounded-xl p-6 shadow-lg">
+                                <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
+                                <p class="text-gray-600 mb-6">Джордж "Пруфы Выкини" — слуга Морковь Морковича. Он любит слушаться своего хозяина.</p>
+                                <a href="proofs_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                                    Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-apple-alt text-purple-400 mr-2"></i> Джорджиниум
+                    </h3>
+                    <p class="text-gray-400">Фандом-ресурс, посвящённый вселенной Джорджей.</p>
+                </div>
+                <div class="flex flex-col items-center md:items-end">
+                    <h4 class="text-lg font-semibold mb-4">Связь с разработчиком</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://t.me/KoliaGD24" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://discord.com/invite/CQ63Ja3Tvh" class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white hover:bg-indigo-600 transition">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center">
+                <p class="text-gray-500 text-sm">© 2025 Джорджиниум. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-purple-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible hover:bg-purple-700">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Back to top button
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Search and filter functionality
+        const searchInput = document.getElementById('searchGeorge');
+        const filterAll = document.getElementById('filterAll');
+        const filterOfficial = document.getElementById('filterOfficial');
+        const filterCustom = document.getElementById('filterCustom');
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            document.querySelectorAll('.tab').forEach(tab => {
+                const tabName = tab.textContent.toLowerCase();
+                if (tabName.includes(searchTerm)) {
+                    tab.style.display = 'block';
+                } else {
+                    tab.style.display = 'none';
+                }
+            });
+        });
+
+        filterAll.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.style.display = 'block';
+            });
+        });
+
+        filterOfficial.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.classList.contains('custom-george')) {
+                    tab.style.display = 'none';
+                } else {
+                    tab.style.display = 'block';
+                }
+            });
+        });
+
+        filterCustom.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.classList.contains('custom-george')) {
+                    tab.style.display = 'block';
+                } else {
+                    tab.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

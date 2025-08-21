@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эпланд | Джорджиниум</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-apple-alt text-3xl text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Эпланд</h1>
+                    </div>
+                </div>
+                <a href="index.html" class="bg-white text-purple-600 font-bold py-2 px-4 rounded-full hover:bg-gray-100 transition">
+                    Вернуться на главную
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Страна Эпланд</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Исследуйте удивительные области и города страны Джорджей.</p>
+            </div>
+
+            <div class="map-container bg-white p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Apple Region -->
+                    <div class="lg:col-span-1 bg-blue-50 rounded-xl p-6 shadow-md">
+                        <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                            <i class="fas fa-apple-alt text-red-500 mr-2"></i> Яблочная область
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-city text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">Ухватск</span>
+                                    <p class="text-sm text-gray-600">Столица, административный центр, заводы E400</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-industry text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">Битаград</span>
+                                    <p class="text-sm text-gray-600">Город заводов, промзона, производство бит</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-tree text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">Глухово</span>
+                                    <p class="text-sm text-gray-600">Деревня, сельское хозяйство, "глупеющие" яблоки</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-umbrella-beach text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">Садоград</span>
+                                    <p class="text-sm text-gray-600">Море, курорт, яблочные спа</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-ghost text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">Остров Отсутствия Кнопок</span>
+                                    <p class="text-sm text-gray-600">Заброшенный город с эндо-скелетами</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-blue-500 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-medium">ФырдаГрад</span>
+                                    <p class="text-sm text-gray-600">Самый отдалённый город</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Map Visualization -->
+                    <div class="lg:col-span-2 relative">
+                        <div class="bg-white rounded-xl p-4 h-full flex items-center justify-center">
+                            <div class="relative w-full h-96">
+                                <img src="https://placehold.co/800x600/e5e7eb/6b7280?text=Карта+Эпланда" alt="Карта Эпланда" class="w-full h-full object-contain rounded-lg">
+                                <div class="map-tooltip" id="mapTooltip"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Regions -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Red Region -->
+                        <div class="bg-red-50 rounded-xl p-6 shadow-md">
+                            <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                                <i class="fas fa-apple-alt text-red-500 mr-2"></i> Красная область
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-car text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Громовск</span>
+                                        <p class="text-sm text-gray-600">Транспортный узел, гоночные трассы</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-flask text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Антоновск</span>
+                                        <p class="text-sm text-gray-600">Производство уксуса и кислых яблок</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-honey-pot text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Коробовка</span>
+                                        <p class="text-sm text-gray-600">Сладкие мини-яблоки, медовая промышленность</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-snowflake text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Ранетск</span>
+                                        <p class="text-sm text-gray-600">Морозостойкие сорта яблок</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Raspberry Region -->
+                        <div class="bg-pink-50 rounded-xl p-6 shadow-md">
+                            <h3 class="text-xl font-bold text-pink-800 mb-4 flex items-center">
+                                <i class="fas fa-raspberry text-pink-500 mr-2"></i> Малиновая область
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-atom text-pink-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Ягодноград</span>
+                                        <p class="text-sm text-gray-600">Научный центр, биотехнологии</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-robot text-pink-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Кремневик</span>
+                                        <p class="text-sm text-gray-600">Дроностроение, IT-кластер</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-seedling text-pink-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Лавоград</span>
+                                        <p class="text-sm text-gray-600">Экспериментальные плантации</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-gavel text-pink-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <span class="font-medium">Малиновск</span>
+                                        <p class="text-sm text-gray-600">Без законов, деревня</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wasteland Section -->
+                <div class="mt-8 bg-gray-100 rounded-xl p-6 shadow-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-question-circle text-gray-500 mr-2"></i> Пустошь Вопросов
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 flex items-center">
+                                <i class="fas fa-book text-gray-500 mr-2"></i> Тишино
+                            </h4>
+                            <p class="text-sm text-gray-600 mt-1">Деревня, зона тишины, библиотеки, леса</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 flex items-center">
+                                <i class="fas fa-question text-gray-500 mr-2"></i> Неверово
+                            </h4>
+                            <p class="text-sm text-gray-600 mt-1">Деревня, центр скептицизма</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 flex items-center">
+                                <i class="fas fa-industry text-gray-500 mr-2"></i> Иджванград
+                            </h4>
+                            <p class="text-sm text-gray-600 mt-1">Заброшенные заводы, леса, город</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 flex items-center">
+                                <i class="fas fa-mountain text-gray-500 mr-2"></i> Болотные Гари
+                            </h4>
+                            <p class="text-sm text-gray-600 mt-1">Горная местность, философская коммуна</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-apple-alt text-purple-400 mr-2"></i> Джорджиниум
+                    </h3>
+                    <p class="text-gray-400">Фандом-ресурс, посвящённый вселенной Джорджей.</p>
+                </div>
+                <div class="flex flex-col items-center md:items-end">
+                    <h4 class="text-lg font-semibold mb-4">Связь с разработчиком</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://t.me/KoliaGD24" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://discord.com/invite/CQ63Ja3Tvh" class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white hover:bg-indigo-600 transition">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center">
+                <p class="text-gray-500 text-sm">© 2025 Джорджиниум. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
