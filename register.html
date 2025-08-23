@@ -17,59 +17,78 @@
         .auth-container {
             max-width: 400px;
             margin: 50px auto;
-            padding: 20px;
+            padding: 30px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         .auth-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
+            color: #4f46e5;
+            margin-bottom: 25px;
+            font-size: 24px;
         }
         .auth-container input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             box-sizing: border-box;
+            font-family: 'Rubik', sans-serif;
         }
         .auth-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .auth-buttons button, .auth-buttons a {
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-            text-align: center;
+            margin-top: 25px;
         }
         .auth-buttons button {
+            width: 100%;
+            padding: 12px;
             border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+        .auth-buttons button:hover {
+            opacity: 0.9;
         }
         .back-link {
             display: block;
-            text-align: center;
             margin-top: 15px;
-            color: #666;
+            color: #7c3aed;
             text-decoration: none;
         }
         .back-link:hover {
-            color: #333;
+            text-decoration: underline;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="auth-container">
+        <div class="logo">
+            <i class="fas fa-apple-alt"></i>
+        </div>
         <h2>Регистрация</h2>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Пароль" required>
+        <input type="email" id="email" placeholder="Ваш email" required>
+        <input type="password" id="password" placeholder="Придумайте пароль" required>
         <div class="auth-buttons">
-            <button id="registerButton" class="bg-green-500 text-white">Зарегистрироваться</button>
+            <button id="registerButton">Зарегистрироваться</button>
         </div>
         <a href="login.html" class="back-link">Уже есть аккаунт? Войти</a>
     </div>
@@ -81,7 +100,7 @@
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         document.getElementById('registerButton').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
             if (!email || !password) {
@@ -89,16 +108,25 @@
                 return;
             }
 
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-            });
+            if (password.length < 6) {
+                alert('Пароль должен содержать не менее 6 символов!');
+                return;
+            }
 
-            if (error) {
-                alert("Ошибка: " + error.message);
-            } else {
-                alert("Вы успешно зарегистрировались!");
-                window.location.href = 'index.html';
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) {
+                    alert("Ошибка регистрации: " + error.message);
+                } else {
+                    alert("Вы успешно зарегистрировались!");
+                    window.location.href = 'index.html';
+                }
+            } catch (err) {
+                alert("Произошла ошибка: " + err.message);
             }
         });
     </script>
