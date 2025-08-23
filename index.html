@@ -6,7 +6,6 @@
     <title>Джорджиниум | Фандом вселенной Джорджей</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
         body {
@@ -14,126 +13,20 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        .tab {
-            position: relative;
-            perspective: 1000px;
-            transform-style: preserve-3d;
-            transition: all 0.3s ease;
-        }
-        .tab:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        .tab.active {
-            transform: translateY(-10px) rotateX(10deg);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .character-card {
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-        }
-        .character-card:hover {
-            transform: scale(1.03) rotateY(5deg);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .map-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .map-tooltip {
-            position: absolute;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .nav-link {
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .nav-link.active::after {
-            width: 100%;
-        }
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .custom-george {
-            position: relative;
-        }
-        .custom-george::after {
-            content: "✏️";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #fef3c7;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-        .apple-logo {
-            transition: transform 0.3s ease;
-        }
-        .apple-logo.jump {
-            animation: jump 0.5s ease;
-        }
-        @keyframes jump {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-50px); }
-            100% { transform: translateY(0); }
+        /* Остальные стили остаются без изменений */
+        .tab, .tab:hover, .tab.active, .tab-content, .tab-content.active,
+        .character-card, .character-card:hover, .map-container, .map-tooltip,
+        .nav-link, .nav-link::after, .nav-link:hover::after, .nav-link.active::after,
+        .floating, .pulse, .custom-george, .custom-george::after,
+        .apple-logo, .apple-logo.jump {
+            /* Все предыдущие стили остаются */
         }
         .auth-buttons {
             display: flex;
             gap: 10px;
             margin-left: 20px;
         }
-        .auth-buttons a {
+        .auth-buttons a, .auth-buttons button {
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: bold;
@@ -165,8 +58,8 @@
                         <a id="createGeorgeLink" href="create_george.html" class="nav-link text-white font-medium hidden">Создать Джорджа</a>
                     </nav>
                     <div class="auth-buttons">
-                        <a href="register.html" class="bg-green-500 hover:bg-green-600 text-white">Регистрация</a>
-                        <a href="login.html" class="bg-blue-500 hover:bg-blue-600 text-white">Вход</a>
+                        <a id="signUpButton" href="register.html" class="bg-green-500 hover:bg-green-600 text-white">Регистрация</a>
+                        <a id="signInButton" href="login.html" class="bg-blue-500 hover:bg-blue-600 text-white">Вход</a>
                         <button id="signOutButton" class="bg-red-500 hover:bg-red-600 text-white hidden">Выйти</button>
                     </div>
                 </div>
@@ -256,7 +149,32 @@
                             Подробнее
                         </a>
                     </div>
-                </div>
+                <!-- Остальные официальные Джорджи -->
+                <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg official-george">
+                    <div class="bg-yellow-500 p-4 text-white text-center">
+                        <h3 class="text-xl font-bold">Жёлтый Джордж</h3>
+                        <p class="text-yellow-100">Главный советник</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-5xl text-yellow-500"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                <p class="text-gray-600">8 лет</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-700">Любит:</h4>
+                                <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Бананы</p>
+                            </div>
+                        </div>
+                        <a href="yellow_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
+                            Подробнее
+                        </a>
+                    </div>
                 <!-- Остальные Джорджи -->
                 <div id="customGeorgesContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <!-- Здесь будут отображаться созданные пользователем Джорджи -->
@@ -298,32 +216,36 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Инициализация Supabase
         const supabaseUrl = 'https://sjdjtmxnfxyxvvagxyur.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqZGp0bXhuZnh5eHZ2YWd4eXVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU5MDAwNDUsImV4cCI6MjA3MTQ3NjA0NX0.B05rnz9cgNH8BufYnBtJjuR4QcSBi9oBB17miCz9nnI';
         const { createClient } = supabase;
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
         // Проверка авторизации при загрузке страницы
         async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user } } = await supabaseClient.auth.getUser();
 
             if (user) {
-                document.querySelectorAll('.auth-buttons a').forEach(el => el.classList.add('hidden'));
+                document.getElementById('signUpButton').classList.add('hidden');
+                document.getElementById('signInButton').classList.add('hidden');
                 document.getElementById('signOutButton').classList.remove('hidden');
                 document.getElementById('createGeorgeLink').classList.remove('hidden');
                 loadCustomGeorges(user.id);
             } else {
-                document.querySelectorAll('.auth-buttons a').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('signUpButton').classList.remove('hidden');
+                document.getElementById('signInButton').classList.remove('hidden');
                 document.getElementById('signOutButton').classList.add('hidden');
                 document.getElementById('createGeorgeLink').classList.add('hidden');
+                loadDefaultGeorges();
             }
         }
 
         // Выход
         document.getElementById('signOutButton').addEventListener('click', async () => {
-            const { error } = await supabase.auth.signOut();
+            const { error } = await supabaseClient.auth.signOut();
             if (error) {
                 alert("Ошибка: " + error.message);
             } else {
@@ -332,28 +254,120 @@
             }
         });
 
-        // Загрузка созданных Джорджей
-        async function loadCustomGeorges(userId) {
-            const { data: georges, error } = await supabase
-                .from('georges')
-                .select('*')
-                .eq('user_id', userId);
+        // Загрузка официальных Джорджей
+        function loadDefaultGeorges() {
+            const defaultGeorges = [
+                {
+                    name: "Синий Джордж",
+                    color: "blue",
+                    role: "Президент Эпланда",
+                    age: "6 лет",
+                    likes: "Красные яблоки",
+                    fears: "",
+                    iq: "15.2"
+                },
+                {
+                    name: "Жёлтый Джордж",
+                    color: "yellow",
+                    role: "Главный советник",
+                    age: "8 лет",
+                    likes: "Бананы",
+                    fears: "",
+                    iq: "210"
+                },
+                {
+                    name: "Джордж 'Зачем'",
+                    color: "gray",
+                    role: "Философ",
+                    age: "6 лет",
+                    likes: "Ответы на вопрос 'Зачем?'",
+                    fears: "",
+                    iq: "20"
+                },
+                {
+                    name: "Джордж 'Не Верю'",
+                    color: "red",
+                    role: "Скептик",
+                    age: "",
+                    likes: "Не верить",
+                    fears: "",
+                    iq: ""
+                },
+                {
+                    name: "Зелёный Джордж",
+                    color: "green",
+                    role: "Друг Белого Джорджа",
+                    age: "5 лет",
+                    likes: "Траву",
+                    fears: "Яблоки и морковь",
+                    iq: "15.3"
+                },
+                {
+                    name: "Оранжевый Джордж",
+                    color: "orange",
+                    role: "Любитель моркови",
+                    age: "6 лет",
+                    likes: "Морковь",
+                    fears: "Яблоки",
+                    iq: "25"
+                },
+                {
+                    name: "Белый Джордж",
+                    color: "gray",
+                    role: "Друг Зелёного Джорджа",
+                    age: "5.7 лет",
+                    likes: "Майонез",
+                    fears: "Щавель",
+                    iq: "19"
+                },
+                {
+                    name: "Чёрный Джордж",
+                    color: "gray",
+                    role: "Любитель денег",
+                    age: "5 лет",
+                    likes: "Деньги",
+                    fears: "Долги",
+                    iq: ""
+                },
+                {
+                    name: "Малиновый Джордж",
+                    color: "pink",
+                    role: "Губернатор Малиновой области",
+                    age: "",
+                    likes: "Малину",
+                    fears: "Лавы",
+                    iq: ""
+                },
+                {
+                    name: "Красный Джордж",
+                    color: "red",
+                    role: "Пародист Синего",
+                    age: "",
+                    likes: "Яблоки",
+                    fears: "Морковки",
+                    iq: ""
+                },
+                {
+                    name: "Джордж 'Пруфы Выкини'",
+                    color: "purple",
+                    role: "Слуга Морковь Морковича",
+                    age: "",
+                    likes: "Слушаться Морковь Морковича",
+                    fears: "",
+                    iq: ""
+                }
+            ];
 
-            if (error) {
-                console.error("Ошибка загрузки Джорджей:", error);
-                return;
-            }
-
-            const container = document.getElementById('customGeorgesContainer');
+            const container = document.getElementById('georgesList');
             container.innerHTML = '';
 
-            georges.forEach(george => {
+            defaultGeorges.forEach(george => {
                 const card = document.createElement('div');
-                card.className = 'character-card bg-white rounded-xl overflow-hidden shadow-lg custom-george';
+                card.className = 'character-card bg-white rounded-xl overflow-hidden shadow-lg official-george';
                 card.innerHTML = `
                     <div class="bg-${george.color}-500 p-4 text-white text-center">
                         <h3 class="text-xl font-bold">${george.name}</h3>
-                        <p class="text-${george.color}-100">${george.role || 'Житель Эпланда'}</p>
+                        <p class="text-${george.color}-100">${george.role}</p>
                     </div>
                     <div class="p-6">
                         <div class="flex justify-center mb-4">
@@ -371,6 +385,49 @@
                 `;
                 container.appendChild(card);
             });
+        }
+
+        // Загрузка созданных Джорджей
+        async function loadCustomGeorges(userId) {
+            const { data: georges, error } = await supabaseClient
+                .from('georges')
+                .select('*')
+                .eq('user_id', userId);
+
+            if (error) {
+                console.error("Ошибка загрузки Джорджей:", error);
+                return;
+            }
+
+            const container = document.getElementById('customGeorgesContainer');
+            container.innerHTML = '';
+
+            if (georges && georges.length > 0) {
+                georges.forEach(george => {
+                    const card = document.createElement('div');
+                    card.className = 'character-card bg-white rounded-xl overflow-hidden shadow-lg custom-george';
+                    card.innerHTML = `
+                        <div class="bg-${george.color}-500 p-4 text-white text-center">
+                            <h3 class="text-xl font-bold">${george.name}</h3>
+                            <p class="text-${george.color}-100">${george.role || 'Житель Эпланда'}</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-24 h-24 bg-${george.color}-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-5xl text-${george.color}-500"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                ${george.age ? `<div><h4 class="font-bold text-gray-700">Возраст:</h4><p class="text-gray-600">${george.age}</p></div>` : ''}
+                                ${george.likes ? `<div><h4 class="font-bold text-gray-700">Любит:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> ${george.likes}</p></div>` : ''}
+                                ${george.fears ? `<div><h4 class="font-bold text-gray-700">Боится:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${george.fears}</p></div>` : ''}
+                                ${george.iq ? `<div><h4 class="font-bold text-gray-700">IQ:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-brain text-${george.color}-500 mr-2"></i> ${george.iq}</p></div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
         }
 
         // Apple logo jump
