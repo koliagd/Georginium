@@ -14,83 +14,132 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        /* Остальные стили остаются без изменений */
-        .tab, .tab:hover, .tab.active, .tab-content, .tab-content.active,
-        .character-card, .character-card:hover, .map-container, .map-tooltip,
-        .nav-link, .nav-link::after, .nav-link:hover::after, .nav-link.active::after,
-        .floating, .pulse, .custom-george, .custom-george::after,
-        .apple-logo, .apple-logo.jump {
-            /* Все предыдущие стили остаются */
+        .tab {
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
         }
-
-        /* Стили для модальных окон */
-        .modal {
+        .tab:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .tab.active {
+            transform: translateY(-10px) rotateX(10deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .tab-content {
             display: none;
-            position: fixed;
-            top: 0;
+            animation: fadeIn 0.5s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .character-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .character-card:hover {
+            transform: scale(1.03) rotateY(5deg);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .map-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .map-tooltip {
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
             left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
         }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-            max-width: 90%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .modal-content h3 {
-            margin-top: 0;
-            text-align: center;
-            color: #333;
-        }
-        .modal-content input {
+        .nav-link.active::after {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
         }
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+        .floating {
+            animation: floating 3s ease-in-out infinite;
         }
-        .modal-buttons button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
-        .close-modal {
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .custom-george {
+            position: relative;
+        }
+        .custom-george::after {
+            content: "✏️";
             position: absolute;
             top: 10px;
-            right: 15px;
-            font-size: 20px;
-            cursor: pointer;
-            color: #666;
+            right: 10px;
+            background: #fef3c7;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .apple-logo {
+            transition: transform 0.3s ease;
+        }
+        .apple-logo.jump {
+            animation: jump 0.5s ease;
+        }
+        @keyframes jump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-50px); }
+            100% { transform: translateY(0); }
         }
         .auth-buttons {
             display: flex;
             gap: 10px;
             margin-left: 20px;
         }
-        .auth-buttons button {
+        .auth-buttons a {
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -116,8 +165,8 @@
                         <a id="createGeorgeLink" href="create_george.html" class="nav-link text-white font-medium hidden">Создать Джорджа</a>
                     </nav>
                     <div class="auth-buttons">
-                        <button id="signUpButton" class="bg-green-500 hover:bg-green-600 text-white">Регистрация</button>
-                        <button id="signInButton" class="bg-blue-500 hover:bg-blue-600 text-white">Вход</button>
+                        <a href="register.html" class="bg-green-500 hover:bg-green-600 text-white">Регистрация</a>
+                        <a href="login.html" class="bg-blue-500 hover:bg-blue-600 text-white">Вход</a>
                         <button id="signOutButton" class="bg-red-500 hover:bg-red-600 text-white hidden">Выйти</button>
                     </div>
                 </div>
@@ -125,47 +174,123 @@
         </div>
     </header>
 
-    <!-- Модальное окно для регистрации -->
-    <div id="signUpModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeSignUp">&times;</span>
-            <h3>Регистрация</h3>
-            <input type="email" id="signupEmail" placeholder="Email" required>
-            <input type="password" id="signupPassword" placeholder="Пароль" required>
-            <div class="modal-buttons">
-                <button id="confirmSignUp" class="bg-green-500 text-white">Зарегистрироваться</button>
-                <button id="cancelSignUp" class="bg-gray-300">Отмена</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для входа -->
-    <div id="signInModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeSignIn">&times;</span>
-            <h3>Вход</h3>
-            <input type="email" id="signinEmail" placeholder="Email" required>
-            <input type="password" id="signinPassword" placeholder="Пароль" required>
-            <div class="modal-buttons">
-                <button id="confirmSignIn" class="bg-blue-500 text-white">Войти</button>
-                <button id="cancelSignIn" class="bg-gray-300">Отмена</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Hero Section -->
     <section id="home" class="py-16 bg-gradient-to-b from-blue-50 to-purple-50">
-        <!-- Остальной контент остается без изменений -->
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Добро пожаловать в мир <span class="text-purple-600">Джорджей</span></h2>
+                    <p class="text-lg text-gray-600 mb-8">Откройте для себя удивительных жителей страны Эпланд. Узнайте их предпочтения, страхи и уникальные особенности.</p>
+                    <div class="flex space-x-4">
+                        <a href="#all-georges" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                            Исследовать Джорджей
+                        </a>
+                        <a href="epland.html" class="bg-white hover:bg-gray-100 text-purple-600 font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105 border border-purple-200">
+                            Карта Эпланда
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 flex justify-center">
+                    <div class="relative w-full max-w-md">
+                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-400 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="relative bg-white p-6 rounded-2xl shadow-xl transform rotate-2">
+                            <div class="bg-gradient-to-r from-blue-400 to-purple-500 p-1 rounded-lg mb-4">
+                                <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Джорджи" alt="Джорджи" class="w-full h-auto rounded-lg">
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800">Синий Джордж</h3>
+                                    <p class="text-gray-600">Президент Эпланда</p>
+                                </div>
+                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                    IQ: 15.2
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- All Georges Section -->
     <section id="all-georges" class="py-16 bg-white">
-        <!-- Остальной контент остается без изменений -->
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Все Джорджи</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
+                    <input type="text" id="searchGeorge" placeholder="Поиск Джорджа..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 w-full md:w-1/2">
+                    <div class="flex space-x-2">
+                        <button id="filterAll" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Все</button>
+                        <button id="filterOfficial" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Официальные</button>
+                        <button id="filterCustom" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Созданные</button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="georgesList">
+                <!-- Официальные Джорджи -->
+                <div class="character-card bg-white rounded-xl overflow-hidden shadow-lg official-george">
+                    <div class="bg-blue-500 p-4 text-white text-center">
+                        <h3 class="text-xl font-bold">Синий Джордж</h3>
+                        <p class="text-blue-100">Президент Эпланда</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-center mb-4">
+                            <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-5xl text-blue-500"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                <p class="text-gray-600">6 лет</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-700">Любит:</h4>
+                                <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Красные яблоки</p>
+                            </div>
+                        </div>
+                        <a href="blue_george.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+                <!-- Остальные Джорджи -->
+                <div id="customGeorgesContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Здесь будут отображаться созданные пользователем Джорджи -->
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
-        <!-- Остальной контент остается без изменений -->
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-apple-alt text-purple-400 mr-2"></i> Джорджиниум
+                    </h3>
+                    <p class="text-gray-400">Фандом-ресурс, посвящённый вселенной Джорджей.</p>
+                </div>
+                <div class="flex flex-col items-center md:items-end">
+                    <h4 class="text-lg font-semibold mb-4">Связь с разработчиком</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://t.me/KoliaGD24" class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white hover:bg-blue-600 transition">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://discord.com/invite/CQ63Ja3Tvh" class="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white hover:bg-indigo-600 transition">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center">
+                <p class="text-gray-500 text-sm">© 2025 Джорджиниум. Все права защищены.</p>
+            </div>
+        </div>
     </footer>
 
     <!-- Back to Top Button -->
@@ -180,112 +305,21 @@
         const { createClient } = supabase;
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Функции для работы с модальными окнами
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            // Очищаем поля при закрытии
-            if (modalId === 'signUpModal') {
-                document.getElementById('signupEmail').value = '';
-                document.getElementById('signupPassword').value = '';
-            } else if (modalId === 'signInModal') {
-                document.getElementById('signinEmail').value = '';
-                document.getElementById('signinPassword').value = '';
-            }
-        }
-
         // Проверка авторизации при загрузке страницы
         async function checkAuth() {
             const { data: { user } } = await supabase.auth.getUser();
 
             if (user) {
-                document.getElementById('signUpButton').classList.add('hidden');
-                document.getElementById('signInButton').classList.add('hidden');
+                document.querySelectorAll('.auth-buttons a').forEach(el => el.classList.add('hidden'));
                 document.getElementById('signOutButton').classList.remove('hidden');
                 document.getElementById('createGeorgeLink').classList.remove('hidden');
                 loadCustomGeorges(user.id);
             } else {
-                document.getElementById('signUpButton').classList.remove('hidden');
-                document.getElementById('signInButton').classList.remove('hidden');
+                document.querySelectorAll('.auth-buttons a').forEach(el => el.classList.remove('hidden'));
                 document.getElementById('signOutButton').classList.add('hidden');
                 document.getElementById('createGeorgeLink').classList.add('hidden');
             }
         }
-
-        // Регистрация
-        document.getElementById('signUpButton').addEventListener('click', () => {
-            openModal('signUpModal');
-        });
-
-        document.getElementById('confirmSignUp').addEventListener('click', async () => {
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-
-            if (!email || !password) {
-                alert('Пожалуйста, заполните все поля!');
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert("Ошибка: " + error.message);
-            } else {
-                alert("Вы успешно зарегистрировались!");
-                closeModal('signUpModal');
-                checkAuth();
-            }
-        });
-
-        document.getElementById('cancelSignUp').addEventListener('click', () => {
-            closeModal('signUpModal');
-        });
-
-        document.getElementById('closeSignUp').addEventListener('click', () => {
-            closeModal('signUpModal');
-        });
-
-        // Вход
-        document.getElementById('signInButton').addEventListener('click', () => {
-            openModal('signInModal');
-        });
-
-        document.getElementById('confirmSignIn').addEventListener('click', async () => {
-            const email = document.getElementById('signinEmail').value;
-            const password = document.getElementById('signinPassword').value;
-
-            if (!email || !password) {
-                alert('Пожалуйста, заполните все поля!');
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert("Ошибка: " + error.message);
-            } else {
-                alert("Вы успешно вошли!");
-                closeModal('signInModal');
-                checkAuth();
-            }
-        });
-
-        document.getElementById('cancelSignIn').addEventListener('click', () => {
-            closeModal('signInModal');
-        });
-
-        document.getElementById('closeSignIn').addEventListener('click', () => {
-            closeModal('signInModal');
-        });
 
         // Выход
         document.getElementById('signOutButton').addEventListener('click', async () => {
