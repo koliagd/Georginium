@@ -30,19 +30,38 @@
         .color-option.selected {
             border-color: #000;
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s;
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
         }
-        .back-button:hover {
-            opacity: 0.9;
+        .preview-card {
+            width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .preview-header {
+            padding: 12px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+        .preview-body {
+            background: white;
+            padding: 16px;
+            text-align: center;
+        }
+        .preview-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
         }
     </style>
 </head>
@@ -127,6 +146,39 @@
                         <label for="georgeRole" class="block text-gray-700 font-medium mb-2">Роль</label>
                         <input type="text" id="georgeRole" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Например, Губернатор">
                     </div>
+
+                    <div class="preview-container">
+                        <div class="preview-card" id="previewCard">
+                            <div class="preview-header bg-purple-500 p-4 text-white text-center" id="previewHeader">
+                                <h3 class="text-lg font-bold" id="previewName">Предварительный просмотр</h3>
+                                <p class="text-purple-100" id="previewRole">Роль</p>
+                            </div>
+                            <div class="preview-body">
+                                <div class="preview-avatar bg-purple-100" id="previewAvatar">
+                                    <i class="fas fa-user text-3xl text-purple-500"></i>
+                                </div>
+                                <div class="space-y-2">
+                                    <div id="previewAge" class="hidden">
+                                        <h4 class="font-bold text-gray-700">Возраст:</h4>
+                                        <p class="text-gray-600" id="previewAgeValue"></p>
+                                    </div>
+                                    <div id="previewLikes" class="hidden">
+                                        <h4 class="font-bold text-gray-700">Любит:</h4>
+                                        <p class="text-gray-600 flex items-center" id="previewLikesValue"><i class="fas fa-heart text-red-500 mr-2"></i></p>
+                                    </div>
+                                    <div id="previewFears" class="hidden">
+                                        <h4 class="font-bold text-gray-700">Боится:</h4>
+                                        <p class="text-gray-600 flex items-center" id="previewFearsValue"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i></p>
+                                    </div>
+                                    <div id="previewIQ" class="hidden">
+                                        <h4 class="font-bold text-gray-700">IQ:</h4>
+                                        <p class="text-gray-600 flex items-center" id="previewIQValue"><i class="fas fa-brain text-purple-500 mr-2"></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex justify-center">
                         <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 shadow-lg transform hover:scale-105">
                             Создать Джорджа
@@ -192,7 +244,71 @@
                 colorTextInput.value = colorName;
                 selectedColor = colorName;
                 colorPicker.classList.add('hidden');
+                updatePreview();
             });
+        });
+
+        // Обновление предварительного просмотра
+        function updatePreview() {
+            const name = document.getElementById('georgeName').value || 'Предварительный просмотр';
+            const role = document.getElementById('georgeRole').value || 'Роль';
+            const age = document.getElementById('georgeAge').value;
+            const iq = document.getElementById('georgeIQ').value;
+            const likes = document.getElementById('georgeLikes').value;
+            const fears = document.getElementById('georgeFears').value;
+
+            const previewCard = document.getElementById('previewCard');
+            const previewHeader = document.getElementById('previewHeader');
+            const previewAvatar = document.getElementById('previewAvatar');
+            const previewName = document.getElementById('previewName');
+            const previewRole = document.getElementById('previewRole');
+            const previewAge = document.getElementById('previewAge');
+            const previewAgeValue = document.getElementById('previewAgeValue');
+            const previewLikes = document.getElementById('previewLikes');
+            const previewLikesValue = document.getElementById('previewLikesValue');
+            const previewFears = document.getElementById('previewFears');
+            const previewFearsValue = document.getElementById('previewFearsValue');
+            const previewIQ = document.getElementById('previewIQ');
+            const previewIQValue = document.getElementById('previewIQValue');
+
+            previewHeader.className = `preview-header bg-${selectedColor}-500 p-4 text-white text-center`;
+            previewAvatar.className = `preview-avatar bg-${selectedColor}-100`;
+            previewAvatar.innerHTML = `<i class="fas fa-user text-3xl text-${selectedColor}-500"></i>`;
+            previewName.textContent = name;
+            previewRole.textContent = role;
+
+            if (age) {
+                previewAge.classList.remove('hidden');
+                previewAgeValue.textContent = age;
+            } else {
+                previewAge.classList.add('hidden');
+            }
+
+            if (likes) {
+                previewLikes.classList.remove('hidden');
+                previewLikesValue.innerHTML = `<i class="fas fa-heart text-red-500 mr-2"></i> ${likes}`;
+            } else {
+                previewLikes.classList.add('hidden');
+            }
+
+            if (fears) {
+                previewFears.classList.remove('hidden');
+                previewFearsValue.innerHTML = `<i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${fears}`;
+            } else {
+                previewFears.classList.add('hidden');
+            }
+
+            if (iq) {
+                previewIQ.classList.remove('hidden');
+                previewIQValue.innerHTML = `<i class="fas fa-brain text-${selectedColor}-500 mr-2"></i> ${iq}`;
+            } else {
+                previewIQ.classList.add('hidden');
+            }
+        }
+
+        // Обновление предварительного просмотра при изменении полей
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', updatePreview);
         });
 
         // Form submission
@@ -232,6 +348,9 @@
                 alert("Произошла ошибка: " + err.message);
             }
         });
+
+        // Инициализация предварительного просмотра
+        updatePreview();
     </script>
 </body>
 </html>

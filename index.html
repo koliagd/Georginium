@@ -14,7 +14,6 @@
             background-color: #f5f5f5;
             color: #333;
         }
-        /* Остальные стили остаются без изменений */
         .auth-buttons {
             display: flex;
             gap: 10px;
@@ -27,6 +26,28 @@
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
+        }
+        .user-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #e0e7ff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -44,7 +65,10 @@
                         <p class="text-blue-100">Фандом вселенной Джорджей</p>
                     </div>
                 </div>
-                <div class="flex items-center">
+                <div class="flex items-center gap-4">
+                    <div id="userIndicator" class="hidden">
+                        <!-- Индикатор пользователя будет здесь -->
+                    </div>
                     <nav class="flex space-x-6">
                         <a href="#home" class="nav-link active text-white font-medium">Главная</a>
                         <a href="#all-georges" class="nav-link text-white font-medium">Все Джорджи</a>
@@ -171,12 +195,28 @@
                 document.getElementById('signInButton').classList.add('hidden');
                 document.getElementById('signOutButton').classList.remove('hidden');
                 document.getElementById('createGeorgeLink').classList.remove('hidden');
+
+                // Показываем индикатор пользователя
+                const userIndicator = document.getElementById('userIndicator');
+                userIndicator.classList.remove('hidden');
+
+                // Получаем первые 4 буквы почты для ника
+                const email = user.email || '';
+                const username = email.substring(0, 4);
+                userIndicator.innerHTML = `
+                    <div class="user-indicator">
+                        <div class="user-avatar">${username}</div>
+                        <span>${username}</span>
+                    </div>
+                `;
+
                 loadCustomGeorges(user.id);
             } else {
                 document.getElementById('signUpButton').classList.remove('hidden');
                 document.getElementById('signInButton').classList.remove('hidden');
                 document.getElementById('signOutButton').classList.add('hidden');
                 document.getElementById('createGeorgeLink').classList.add('hidden');
+                document.getElementById('userIndicator').classList.add('hidden');
             }
             loadDefaultGeorges();
         }
@@ -202,7 +242,8 @@
                     age: "6 лет",
                     likes: "Красные яблоки",
                     fears: "",
-                    iq: "15.2"
+                    iq: "15.2",
+                    link: "blue_george.html"
                 },
                 {
                     name: "Жёлтый Джордж",
@@ -211,7 +252,8 @@
                     age: "8 лет",
                     likes: "Бананы",
                     fears: "",
-                    iq: "210"
+                    iq: "210",
+                    link: "yellow_george.html"
                 },
                 {
                     name: "Джордж 'Зачем'",
@@ -220,7 +262,8 @@
                     age: "6 лет",
                     likes: "Ответы на вопрос 'Зачем?'",
                     fears: "",
-                    iq: "20"
+                    iq: "20",
+                    link: "why_george.html"
                 },
                 {
                     name: "Джордж 'Не Верю'",
@@ -229,7 +272,8 @@
                     age: "",
                     likes: "Не верить",
                     fears: "",
-                    iq: ""
+                    iq: "",
+                    link: "dontbelieve_george.html"
                 },
                 {
                     name: "Зелёный Джордж",
@@ -238,7 +282,8 @@
                     age: "5 лет",
                     likes: "Траву",
                     fears: "Яблоки и морковь",
-                    iq: "15.3"
+                    iq: "15.3",
+                    link: "green_george.html"
                 },
                 {
                     name: "Оранжевый Джордж",
@@ -247,7 +292,8 @@
                     age: "6 лет",
                     likes: "Морковь",
                     fears: "Яблоки",
-                    iq: "25"
+                    iq: "25",
+                    link: "orange_george.html"
                 },
                 {
                     name: "Белый Джордж",
@@ -256,7 +302,8 @@
                     age: "5.7 лет",
                     likes: "Майонез",
                     fears: "Щавель",
-                    iq: "19"
+                    iq: "19",
+                    link: "white_george.html"
                 },
                 {
                     name: "Чёрный Джордж",
@@ -265,7 +312,8 @@
                     age: "5 лет",
                     likes: "Деньги",
                     fears: "Долги",
-                    iq: ""
+                    iq: "",
+                    link: "black_george.html"
                 },
                 {
                     name: "Малиновый Джордж",
@@ -274,7 +322,8 @@
                     age: "",
                     likes: "Малину",
                     fears: "Лавы",
-                    iq: ""
+                    iq: "",
+                    link: "raspberry_george.html"
                 },
                 {
                     name: "Красный Джордж",
@@ -283,7 +332,8 @@
                     age: "",
                     likes: "Яблоки",
                     fears: "Морковки",
-                    iq: ""
+                    iq: "",
+                    link: "red_george.html"
                 },
                 {
                     name: "Джордж 'Пруфы Выкини'",
@@ -292,7 +342,8 @@
                     age: "",
                     likes: "Слушаться Морковь Морковича",
                     fears: "",
-                    iq: ""
+                    iq: "",
+                    link: "proofs_george.html"
                 }
             ];
 
@@ -319,7 +370,7 @@
                             ${george.fears ? `<div><h4 class="font-bold text-gray-700">Боится:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${george.fears}</p></div>` : ''}
                             ${george.iq ? `<div><h4 class="font-bold text-gray-700">IQ:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-brain text-${george.color}-500 mr-2"></i> ${george.iq}</p></div>` : ''}
                         </div>
-                        <a href="#" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
+                        <a href="${george.link}" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
                             Подробнее
                         </a>
                     </div>
@@ -364,9 +415,6 @@
                                     ${george.fears ? `<div><h4 class="font-bold text-gray-700">Боится:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${george.fears}</p></div>` : ''}
                                     ${george.iq ? `<div><h4 class="font-bold text-gray-700">IQ:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-brain text-${george.color}-500 mr-2"></i> ${george.iq}</p></div>` : ''}
                                 </div>
-                                <a href="#" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
-                                    Подробнее
-                                </a>
                             </div>
                         `;
                         container.appendChild(card);
