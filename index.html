@@ -9,45 +9,176 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+        :root {
+            --pig-skin: #ffd1dc;
+        }
         body {
             font-family: 'Rubik', sans-serif;
             background-color: #f5f5f5;
             color: #333;
         }
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-            margin-left: 20px;
+        .character-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
         }
-        .auth-buttons a, .auth-buttons button {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
+        .character-card:hover {
+            transform: translateY(-3px);
+        }
+        .george-avatar {
+            background-color: var(--pig-skin);
+            border: 2px solid white;
         }
         .user-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
-            background-color: #e0e7ff;
+            background-color: rgba(255, 255, 255, 0.2);
             padding: 6px 12px;
             border-radius: 20px;
-            font-weight: 600;
-            color: #4f46e5;
+            backdrop-filter: blur(10px);
         }
         .user-avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background-color: #4f46e5;
-            color: white;
+            background-color: var(--pig-skin);
+            color: #4f46e5;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
+            border: 1px solid white;
+        }
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #4f46e5;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        .custom-george {
+            border: 2px solid #e5e7eb;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+        .close {
+            color: #aaa;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #333;
+        }
+        .modal-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .modal-info {
+            flex-grow: 1;
+        }
+        .modal-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--pig-skin);
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .george-details {
+            margin-top: 15px;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 3px;
         }
     </style>
 </head>
@@ -55,30 +186,28 @@
     <!-- Header -->
     <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center mb-4 md:mb-0">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg apple-logo" id="appleLogo">
-                        <i class="fas fa-apple-alt text-3xl text-purple-600"></i>
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-piggy-bank text-3xl" style="color: var(--pig-skin);"></i>
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold">Джорджиниум</h1>
-                        <p class="text-blue-100">Фандом вселенной Джорджей</p>
+                        <p class="text-blue-100">Фандом вселенной свинок-Джорджей</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div id="userIndicator" class="hidden">
-                        <!-- Индикатор пользователя будет здесь -->
-                    </div>
+                    <div id="userIndicator" class="hidden"></div>
                     <nav class="flex space-x-6">
-                        <a href="#home" class="nav-link active text-white font-medium">Главная</a>
-                        <a href="#all-georges" class="nav-link text-white font-medium">Все Джорджи</a>
-                        <a href="epland.html" class="nav-link text-white font-medium">Эпланд</a>
-                        <a id="createGeorgeLink" href="create_george.html" class="nav-link text-white font-medium hidden">Создать Джорджа</a>
+                        <a href="#home" class="text-white font-medium hover:opacity-80 transition">Главная</a>
+                        <a href="#all-georges" class="text-white font-medium hover:opacity-80 transition">Все Джорджи</a>
+                        <a href="epland.html" class="text-white font-medium hover:opacity-80 transition">Эпланд</a>
+                        <a id="createGeorgeLink" href="create_george.html" class="text-white font-medium hover:opacity-80 transition hidden">Создать Джорджа</a>
                     </nav>
                     <div class="auth-buttons">
-                        <a id="signUpButton" href="register.html" class="bg-green-500 hover:bg-green-600 text-white">Регистрация</a>
-                        <a id="signInButton" href="login.html" class="bg-blue-500 hover:bg-blue-600 text-white">Вход</a>
-                        <button id="signOutButton" class="bg-red-500 hover:bg-red-600 text-white hidden">Выйти</button>
+                        <a id="signUpButton" href="register.html" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">Регистрация</a>
+                        <a id="signInButton" href="login.html" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">Вход</a>
+                        <button id="signOutButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition hidden">Выйти</button>
                     </div>
                 </div>
             </div>
@@ -88,36 +217,25 @@
     <!-- Hero Section -->
     <section id="home" class="py-16 bg-gradient-to-b from-blue-50 to-purple-50">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row items-center">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
                 <div class="lg:w-1/2 mb-10 lg:mb-0">
-                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Добро пожаловать в мир <span class="text-purple-600">Джорджей</span></h2>
-                    <p class="text-lg text-gray-600 mb-8">Откройте для себя удивительных жителей страны Эпланд. Узнайте их предпочтения, страхи и уникальные особенности.</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Добро пожаловать в мир свинок-Джорджей</h2>
+                    <p class="text-lg text-gray-600 mb-8">Познакомьтесь с удивительными розовыми свинками из страны Эпланд. Узнайте об их привычках, страхах и уникальных особенностях.</p>
                     <div class="flex space-x-4">
-                        <a href="#all-georges" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
-                            Исследовать Джорджей
-                        </a>
-                        <a href="epland.html" class="bg-white hover:bg-gray-100 text-purple-600 font-bold py-3 px-6 rounded-full transition duration-300 shadow-lg transform hover:scale-105 border border-purple-200">
-                            Карта Эпланда
-                        </a>
+                        <a href="#all-georges" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl">Исследовать Джорджей</a>
+                        <a href="epland.html" class="bg-white hover:bg-gray-50 text-purple-600 font-bold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl">Карта Эпланда</a>
                     </div>
                 </div>
                 <div class="lg:w-1/2 flex justify-center">
                     <div class="relative w-full max-w-md">
-                        <div class="absolute -top-10 -left-10 w-32 h-32 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
-                        <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-400 rounded-full opacity-20 animate-pulse"></div>
-                        <div class="relative bg-white p-6 rounded-2xl shadow-xl transform rotate-2">
-                            <div class="bg-gradient-to-r from-blue-400 to-purple-500 p-1 rounded-lg mb-4">
-                                <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Джорджи" alt="Джорджи" class="w-full h-auto rounded-lg">
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <h3 class="font-bold text-xl text-gray-800">Синий Джордж</h3>
-                                    <p class="text-gray-600">Президент Эпланда</p>
-                                </div>
-                                <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                    IQ: 15.2
+                        <div class="character-card p-6">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-32 h-32 george-avatar rounded-full flex items-center justify-center">
+                                    <i class="fas fa-piggy-bank text-4xl" style="color: var(--pig-skin);"></i>
                                 </div>
                             </div>
+                            <h3 class="font-bold text-2xl text-center text-gray-800 mb-2">Типичный Джордж</h3>
+                            <p class="text-center text-gray-600">Розовая свинка с уникальным характером</p>
                         </div>
                     </div>
                 </div>
@@ -132,13 +250,24 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Все Джорджи</h2>
                 <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mb-6"></div>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-6">
-                    <input type="text" id="searchGeorge" placeholder="Поиск Джорджа..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 w-full md:w-1/2">
+                    <div class="relative w-full md:w-1/2">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchGeorge" placeholder="Найти Джорджа..." class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
                     <div class="flex space-x-2">
                         <button id="filterAll" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Все</button>
                         <button id="filterOfficial" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Официальные</button>
                         <button id="filterCustom" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Созданные</button>
                     </div>
                 </div>
+                <div id="loadingIndicator" class="hidden">
+                    <div class="loading-spinner"></div>
+                    <p class="text-gray-600 mt-2">Загрузка Джорджей...</p>
+                </div>
+                <div id="errorContainer" class="hidden">
+                    <div class="error-message" id="errorMessage"></div>
+                </div>
+                <div id="emptyCustomGeorges" class="empty-message hidden">У вас пока нет созданных Джорджей. <a href="create_george.html" class="text-purple-600 font-medium">Создайте первого!</a></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="georgesList">
                 <!-- Здесь будут отображаться все Джорджи -->
@@ -146,15 +275,51 @@
         </div>
     </section>
 
+    <!-- Модальное окно для пользовательских Джорджей -->
+    <div id="georgeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <div class="modal-avatar" id="modalAvatar"></div>
+                <div class="modal-info">
+                    <h2 class="text-2xl font-bold" id="modalName">Имя Джорджа</h2>
+                    <p class="text-gray-600" id="modalRole">Роль</p>
+                    <div class="modal-author">
+                        <div class="author-avatar" id="modalAuthorAvatar"></div>
+                        <span>Автор: <span id="modalAuthor"></span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="george-details">
+                <div class="detail-item">
+                    <div class="detail-label">Возраст</div>
+                    <div id="modalAge">Не указан</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">IQ</div>
+                    <div id="modalIQ">Не указан</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Любит</div>
+                    <div id="modalLikes">Не указано</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Боится</div>
+                    <div id="modalFears">Не указано</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-6 md:mb-0">
                     <h3 class="text-xl font-bold mb-4 flex items-center">
-                        <i class="fas fa-apple-alt text-purple-400 mr-2"></i> Джорджиниум
+                        <i class="fas fa-piggy-bank text-purple-400 mr-2"></i> Джорджиниум
                     </h3>
-                    <p class="text-gray-400">Фандом-ресурс, посвящённый вселенной Джорджей.</p>
+                    <p class="text-gray-400">Фандом-ресурс, посвящённый розовым свинкам-Джорджам.</p>
                 </div>
                 <div class="flex flex-col items-center md:items-end">
                     <h4 class="text-lg font-semibold mb-4">Связь с разработчиком</h4>
@@ -174,11 +339,6 @@
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-purple-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible hover:bg-purple-700">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
     <script>
         // Инициализация Supabase
         const supabaseUrl = 'https://sjdjtmxnfxyxvvagxyur.supabase.co';
@@ -186,51 +346,118 @@
         const { createClient } = supabase;
         const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-        // Проверка авторизации при загрузке страницы
-        async function checkAuth() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
+        // Модальное окно
+        const modal = document.getElementById('georgeModal');
+        const closeBtn = document.querySelector('.close');
 
-            if (user) {
-                document.getElementById('signUpButton').classList.add('hidden');
-                document.getElementById('signInButton').classList.add('hidden');
-                document.getElementById('signOutButton').classList.remove('hidden');
-                document.getElementById('createGeorgeLink').classList.remove('hidden');
+        // Функция для отображения модального окна
+        function showModal(george, authorEmail) {
+            // Устанавливаем данные в модальное окно
+            document.getElementById('modalName').textContent = george.name || 'Безымянный Джордж';
+            document.getElementById('modalRole').textContent = george.role || 'Житель Эпланда';
+            document.getElementById('modalAge').textContent = george.age || 'Не указан';
+            document.getElementById('modalIQ').textContent = george.iq || 'Не указан';
+            document.getElementById('modalLikes').textContent = george.likes || 'Не указано';
+            document.getElementById('modalFears').textContent = george.fears || 'Не указано';
 
-                // Показываем индикатор пользователя
-                const userIndicator = document.getElementById('userIndicator');
-                userIndicator.classList.remove('hidden');
+            // Устанавливаем цвет и аватар
+            const color = george.color || 'purple';
+            const modalAvatar = document.getElementById('modalAvatar');
+            modalAvatar.style.backgroundColor = `#${color}99`;
+            modalAvatar.innerHTML = '<i class="fas fa-piggy-bank text-2xl" style="color: var(--pig-skin);"></i>';
 
-                // Получаем первые 4 буквы почты для ника
-                const email = user.email || '';
-                const username = email.substring(0, 4);
-                userIndicator.innerHTML = `
-                    <div class="user-indicator">
-                        <div class="user-avatar">${username}</div>
-                        <span>${username}</span>
-                    </div>
-                `;
+            // Устанавливаем автора (первые 5 букв почты)
+            const authorUsername = authorEmail ? authorEmail.substring(0, 5) : '?????';
+            document.getElementById('modalAuthor').textContent = authorUsername;
+            const authorAvatar = document.getElementById('modalAuthorAvatar');
+            authorAvatar.textContent = authorUsername;
 
-                loadCustomGeorges(user.id);
-            } else {
-                document.getElementById('signUpButton').classList.remove('hidden');
-                document.getElementById('signInButton').classList.remove('hidden');
-                document.getElementById('signOutButton').classList.add('hidden');
-                document.getElementById('createGeorgeLink').classList.add('hidden');
-                document.getElementById('userIndicator').classList.add('hidden');
-            }
-            loadDefaultGeorges();
+            // Показываем модальное окно
+            modal.style.display = 'block';
         }
 
-        // Выход
-        document.getElementById('signOutButton').addEventListener('click', async () => {
-            const { error } = await supabaseClient.auth.signOut();
-            if (error) {
-                alert("Ошибка: " + error.message);
-            } else {
-                alert("Вы вышли из аккаунта.");
-                checkAuth();
+        // Закрытие модального окна
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
-        });
+        }
+
+        // Функция для отображения индикатора загрузки
+        function showLoading(show) {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (show) {
+                loadingIndicator.classList.remove('hidden');
+            } else {
+                loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        // Функция для отображения ошибок
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorContainer.classList.remove('hidden');
+        }
+
+        // Функция для скрытия сообщения об ошибке
+        function hideError() {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.classList.add('hidden');
+        }
+
+        // Функция для создания карточки Джорджа
+        function createGeorgeCard(george, authorEmail = null) {
+            const color = george.color || 'purple';
+            const name = george.name || 'Безымянный Джордж';
+            const role = george.role || 'Житель Эпланда';
+
+            // Создаем кнопку "Подробнее" в зависимости от типа Джорджа
+            let detailsButton = '';
+            if (authorEmail) {
+                // Для пользовательских Джорджей - кнопка открывает модальное окно
+                detailsButton = `
+                    <button class="mt-4 block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-center w-full"
+                            onclick="showModal(${JSON.stringify(george).replace(/"/g, '&quot;')}, '${authorEmail}')">
+                        Подробнее
+                    </button>
+                `;
+            } else {
+                // Для официальных Джорджей - обычная ссылка
+                detailsButton = `
+                    <a href="${george.link}" class="mt-4 block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 text-center">
+                        Подробнее
+                    </a>
+                `;
+            }
+
+            return `
+                <div class="bg-${color}-500 p-4 text-white text-center">
+                    <h3 class="text-xl font-bold">${name}</h3>
+                    <p class="text-${color}-100">${role}</p>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-center mb-4">
+                        <div class="w-24 h-24 bg-${color}-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-piggy-bank text-4xl" style="color: var(--pig-skin); transform: rotate(${(Math.random() * 20 - 10)}deg);"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        ${george.age ? `<div class="flex items-center"><i class="fas fa-birthday-cake text-purple-500 mr-2"></i><span>${george.age}</span></div>` : ''}
+                        ${george.likes ? `<div class="flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i><span>${george.likes}</span></div>` : ''}
+                        ${george.fears ? `<div class="flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i><span>Боится: ${george.fears}</span></div>` : ''}
+                        ${george.iq ? `<div class="flex items-center"><i class="fas fa-brain text-${color}-500 mr-2"></i><span>IQ: ${george.iq}</span></div>` : ''}
+                    </div>
+                    ${detailsButton}
+                </div>
+            `;
+        }
 
         // Загрузка официальных Джорджей
         function loadDefaultGeorges() {
@@ -241,7 +468,7 @@
                     role: "Президент Эпланда",
                     age: "6 лет",
                     likes: "Красные яблоки",
-                    fears: "",
+                    fears: "Морковки",
                     iq: "15.2",
                     link: "blue_george.html"
                 },
@@ -251,7 +478,7 @@
                     role: "Главный советник",
                     age: "8 лет",
                     likes: "Бананы",
-                    fears: "",
+                    fears: "Темнота",
                     iq: "210",
                     link: "yellow_george.html"
                 },
@@ -261,8 +488,8 @@
                     role: "Философ",
                     age: "6 лет",
                     likes: "Ответы на вопрос 'Зачем?'",
-                    fears: "",
-                    iq: "20",
+                    fears: "Безответственность",
+                    iq: "50",
                     link: "why_george.html"
                 },
                 {
@@ -270,9 +497,9 @@
                     color: "red",
                     role: "Скептик",
                     age: "",
-                    likes: "Не верить",
-                    fears: "",
-                    iq: "",
+                    likes: "Доказательства",
+                    fears: "Обман",
+                    iq: "50",
                     link: "dontbelieve_george.html"
                 },
                 {
@@ -282,7 +509,7 @@
                     age: "5 лет",
                     likes: "Траву",
                     fears: "Яблоки и морковь",
-                    iq: "15.3",
+                    iq: "50",
                     link: "green_george.html"
                 },
                 {
@@ -292,7 +519,7 @@
                     age: "6 лет",
                     likes: "Морковь",
                     fears: "Яблоки",
-                    iq: "25",
+                    iq: "50",
                     link: "orange_george.html"
                 },
                 {
@@ -302,7 +529,7 @@
                     age: "5.7 лет",
                     likes: "Майонез",
                     fears: "Щавель",
-                    iq: "19",
+                    iq: "50",
                     link: "white_george.html"
                 },
                 {
@@ -312,7 +539,7 @@
                     age: "5 лет",
                     likes: "Деньги",
                     fears: "Долги",
-                    iq: "",
+                    iq: "50",
                     link: "black_george.html"
                 },
                 {
@@ -322,7 +549,7 @@
                     age: "",
                     likes: "Малину",
                     fears: "Лавы",
-                    iq: "",
+                    iq: "140",
                     link: "raspberry_george.html"
                 },
                 {
@@ -332,7 +559,7 @@
                     age: "",
                     likes: "Яблоки",
                     fears: "Морковки",
-                    iq: "",
+                    iq: "50",
                     link: "red_george.html"
                 },
                 {
@@ -341,8 +568,8 @@
                     role: "Слуга Морковь Морковича",
                     age: "",
                     likes: "Слушаться Морковь Морковича",
-                    fears: "",
-                    iq: "",
+                    fears: "Неповиновение",
+                    iq: "50",
                     link: "proofs_george.html"
                 }
             ];
@@ -352,153 +579,177 @@
 
             defaultGeorges.forEach(george => {
                 const card = document.createElement('div');
-                card.className = 'character-card bg-white rounded-xl overflow-hidden shadow-lg official-george';
-                card.innerHTML = `
-                    <div class="bg-${george.color}-500 p-4 text-white text-center">
-                        <h3 class="text-xl font-bold">${george.name}</h3>
-                        <p class="text-${george.color}-100">${george.role}</p>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex justify-center mb-4">
-                            <div class="w-24 h-24 bg-${george.color}-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-user text-5xl text-${george.color}-500"></i>
-                            </div>
-                        </div>
-                        <div class="space-y-3">
-                            ${george.age ? `<div><h4 class="font-bold text-gray-700">Возраст:</h4><p class="text-gray-600">${george.age}</p></div>` : ''}
-                            ${george.likes ? `<div><h4 class="font-bold text-gray-700">Любит:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> ${george.likes}</p></div>` : ''}
-                            ${george.fears ? `<div><h4 class="font-bold text-gray-700">Боится:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${george.fears}</p></div>` : ''}
-                            ${george.iq ? `<div><h4 class="font-bold text-gray-700">IQ:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-brain text-${george.color}-500 mr-2"></i> ${george.iq}</p></div>` : ''}
-                        </div>
-                        <a href="${george.link}" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105 w-full text-center">
-                            Подробнее
-                        </a>
-                    </div>
-                `;
+                card.className = 'character-card official-george';
+                card.innerHTML = createGeorgeCard(george);
                 container.appendChild(card);
             });
         }
 
-        // Загрузка созданных Джорджей
-        async function loadCustomGeorges(userId) {
+        // Загрузка всех созданных Джорджей
+        async function loadAllCustomGeorges() {
+            showLoading(true);
             try {
+                // Получаем всех пользователей для отображения авторов
+                const { data: users, error: usersError } = await supabaseClient
+                    .from('profiles')
+                    .select('id, email');
+
+                if (usersError) {
+                    console.error("Ошибка загрузки пользователей:", usersError);
+                }
+
+                // Получаем всех созданных Джорджей
                 const { data: georges, error } = await supabaseClient
                     .from('georges')
-                    .select('*')
-                    .eq('user_id', userId);
+                    .select('*');
 
                 if (error) {
-                    console.error("Ошибка загрузки Джорджей:", error);
-                    return;
+                    throw new Error(`Ошибка загрузки Джорджей: ${error.message}`);
                 }
 
                 const container = document.getElementById('georgesList');
+                const emptyMessage = document.getElementById('emptyCustomGeorges');
 
                 if (georges && georges.length > 0) {
+                    emptyMessage.classList.add('hidden');
+
                     georges.forEach(george => {
+                        // Находим автора по user_id
+                        let authorEmail = 'неизвестно';
+                        if (users && george.user_id) {
+                            const author = users.find(u => u.id === george.user_id);
+                            if (author) {
+                                authorEmail = author.email;
+                            }
+                        }
+
+                        // Устанавливаем значения по умолчанию, если данные отсутствуют
+                        const color = george.color || 'purple';
+                        const name = george.name || 'Безымянный Джордж';
+                        const role = george.role || 'Житель Эпланда';
+
                         const card = document.createElement('div');
-                        card.className = 'character-card bg-white rounded-xl overflow-hidden shadow-lg custom-george';
-                        card.innerHTML = `
-                            <div class="bg-${george.color}-500 p-4 text-white text-center">
-                                <h3 class="text-xl font-bold">${george.name}</h3>
-                                <p class="text-${george.color}-100">${george.role || 'Житель Эпланда'}</p>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex justify-center mb-4">
-                                    <div class="w-24 h-24 bg-${george.color}-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-user text-5xl text-${george.color}-500"></i>
-                                    </div>
-                                </div>
-                                <div class="space-y-3">
-                                    ${george.age ? `<div><h4 class="font-bold text-gray-700">Возраст:</h4><p class="text-gray-600">${george.age}</p></div>` : ''}
-                                    ${george.likes ? `<div><h4 class="font-bold text-gray-700">Любит:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> ${george.likes}</p></div>` : ''}
-                                    ${george.fears ? `<div><h4 class="font-bold text-gray-700">Боится:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> ${george.fears}</p></div>` : ''}
-                                    ${george.iq ? `<div><h4 class="font-bold text-gray-700">IQ:</h4><p class="text-gray-600 flex items-center"><i class="fas fa-brain text-${george.color}-500 mr-2"></i> ${george.iq}</p></div>` : ''}
-                                </div>
-                            </div>
-                        `;
+                        card.className = 'character-card custom-george';
+                        card.innerHTML = createGeorgeCard(george, authorEmail);
                         container.appendChild(card);
                     });
+                } else {
+                    emptyMessage.classList.remove('hidden');
                 }
             } catch (err) {
-                console.error("Ошибка при загрузке пользовательских Джорджей:", err);
+                console.error('Ошибка при загрузке пользовательских Джорджей:', err);
+                showError(err.message);
+            } finally {
+                showLoading(false);
             }
         }
 
-        // Apple logo jump
-        const appleLogo = document.getElementById('appleLogo');
-        appleLogo.addEventListener('click', () => {
-            appleLogo.classList.add('jump');
-            setTimeout(() => {
-                appleLogo.classList.remove('jump');
-            }, 500);
-        });
+        // Проверка авторизации при загрузке страницы
+        async function checkAuth() {
+            showLoading(true);
+            hideError();
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
 
-        // Back to top button
-        const backToTopButton = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.remove('opacity-0', 'invisible');
-                backToTopButton.classList.add('opacity-100', 'visible');
-            } else {
-                backToTopButton.classList.remove('opacity-100', 'visible');
-                backToTopButton.classList.add('opacity-0', 'invisible');
+                if (user) {
+                    document.getElementById('signUpButton').classList.add('hidden');
+                    document.getElementById('signInButton').classList.add('hidden');
+                    document.getElementById('signOutButton').classList.remove('hidden');
+                    document.getElementById('createGeorgeLink').classList.remove('hidden');
+
+                    // Показываем индикатор пользователя
+                    const userIndicator = document.getElementById('userIndicator');
+                    userIndicator.classList.remove('hidden');
+
+                    // Получаем первые 5 букв почты для ника
+                    const email = user.email || '';
+                    const username = email.substring(0, 5);
+                    userIndicator.innerHTML = `
+                        <div class="user-indicator">
+                            <div class="user-avatar">${username}</div>
+                            <span>${username}</span>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('signUpButton').classList.remove('hidden');
+                    document.getElementById('signInButton').classList.remove('hidden');
+                    document.getElementById('signOutButton').classList.add('hidden');
+                    document.getElementById('createGeorgeLink').classList.add('hidden');
+                    document.getElementById('userIndicator').classList.add('hidden');
+                }
+
+                // Загружаем официальных Джорджей
+                loadDefaultGeorges();
+
+                // Загружаем ВСЕХ созданных Джорджей
+                await loadAllCustomGeorges();
+            } catch (error) {
+                console.error("Ошибка проверки авторизации:", error);
+                showError("Ошибка проверки авторизации. Пожалуйста, обновите страницу.");
+            } finally {
+                showLoading(false);
             }
-        });
+        }
 
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        // Выход
+        document.getElementById('signOutButton').addEventListener('click', async () => {
+            showLoading(true);
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) {
+                    showError("Ошибка выхода: " + error.message);
+                } else {
+                    window.location.reload();
+                }
+            } catch (error) {
+                showError("Произошла ошибка при выходе: " + error.message);
+            } finally {
+                showLoading(false);
+            }
         });
 
         // Поиск и фильтрация
         const searchInput = document.getElementById('searchGeorge');
-        const filterAll = document.getElementById('filterAll');
-        const filterOfficial = document.getElementById('filterOfficial');
-        const filterCustom = document.getElementById('filterCustom');
+        const filterButtons = document.querySelectorAll('.flex.space-x-2 button');
 
         searchInput.addEventListener('input', () => {
             const searchTerm = searchInput.value.toLowerCase();
             document.querySelectorAll('.character-card').forEach(card => {
                 const cardName = card.querySelector('h3').textContent.toLowerCase();
-                if (cardName.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = cardName.includes(searchTerm) ? 'block' : 'none';
             });
         });
 
-        filterAll.addEventListener('click', () => {
-            document.querySelectorAll('.character-card').forEach(card => {
-                card.style.display = 'block';
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('bg-purple-600', 'text-white'));
+                button.classList.add('bg-purple-600', 'text-white');
+
+                const filter = button.id.replace('filter', '').toLowerCase();
+
+                document.querySelectorAll('.character-card').forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else if (filter === 'official' && !card.classList.contains('custom-george')) {
+                        card.style.display = 'block';
+                    } else if (filter === 'custom' && card.classList.contains('custom-george')) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
         });
 
-        filterOfficial.addEventListener('click', () => {
-            document.querySelectorAll('.character-card').forEach(card => {
-                if (card.classList.contains('custom-george')) {
-                    card.style.display = 'none';
-                } else {
-                    card.style.display = 'block';
-                }
-            });
-        });
-
-        filterCustom.addEventListener('click', () => {
-            document.querySelectorAll('.character-card').forEach(card => {
-                if (card.classList.contains('custom-george')) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        // Проверка авторизации при загрузке страницы
-        checkAuth();
+        // Проверка параметров URL для принудительного обновления
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('updated')) {
+            // Принудительно обновляем данные при возвращении с создания Джорджа
+            checkAuth();
+        } else {
+            // Обычная проверка авторизации
+            checkAuth();
+        }
     </script>
 </body>
 </html>
