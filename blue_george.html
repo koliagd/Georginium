@@ -13,10 +13,151 @@
             background-color: #f5f5f5;
             color: #333;
         }
+        .george-card {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .george-header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .george-body {
+            padding: 20px;
+        }
+        .george-avatar {
+            width: 120px;
+            height: 120px;
+            background-color: #ffd1dc;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 48px;
+            position: relative;
+        }
+        .tie {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 30px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 0 0 5px 5px;
+        }
+        .tie:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid #3b82f6;
+        }
+        .tie-knot {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            background: #1e40af;
+            border-radius: 50%;
+        }
+        .george-info {
+            margin-bottom: 15px;
+        }
+        .george-info h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #4b5563;
+        }
+        .apple {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin: 20px auto;
+        }
+        .apple:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: #8b7355;
+            border-radius: 50%;
+        }
+        .apple-leaf {
+            position: absolute;
+            top: -15px;
+            right: -10px;
+            width: 20px;
+            height: 15px;
+            background: #4ade80;
+            border-radius: 50% 0 50% 0;
+            transform: rotate(-30deg);
+        }
+        .carrot {
+            position: relative;
+            width: 30px;
+            height: 50px;
+            background: linear-gradient(to bottom, #f97316, #ea580c);
+            border-radius: 0 0 10px 10px;
+            margin: 20px auto;
+        }
+        .carrot:before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 15px solid #f97316;
+        }
+        .carrot-leaves {
+            position: absolute;
+            top: -10px;
+            left: -5px;
+            width: 30px;
+            height: 15px;
+            background: #4ade80;
+            border-radius: 10px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .back-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Header -->
+<body>
     <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center">
@@ -35,71 +176,130 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <section class="py-16">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-1/3">
-                    <div class="bg-white rounded-xl overflow-hidden shadow-lg">
-                        <div class="bg-blue-500 p-4 text-white text-center">
-                            <h3 class="text-2xl font-bold">Синий Джордж</h3>
-                            <p class="text-blue-100">Президент Эпланда</p>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex justify-center mb-4">
-                                <div class="w-32 h-32 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-6xl text-blue-500"></i>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Возраст:</h4>
-                                    <p class="text-gray-600">6 лет</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Любит:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Красные яблоки</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Боится:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Морковь</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">IQ:</h4>
-                                    <p class="text-gray-600">15.2</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Автор:</h4>
-                                    <p class="text-gray-600">k3</p>
-                                </div>
-                            </div>
+    <div class="container mx-auto px-4">
+        <div class="george-card">
+            <div class="george-header">
+                <div class="flex justify-center mb-4">
+                    <div class="w-32 h-32 george-avatar rounded-full flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                        <div class="tie">
+                            <div class="tie-knot"></div>
                         </div>
                     </div>
                 </div>
-                <div class="lg:w-2/3">
-                    <div class="bg-white rounded-xl p-6 shadow-lg">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
-                        <p class="text-gray-600 mb-6">
-                            Синий Джордж — основатель и действующий президент страны Эпланд. Он основал страну 3 февраля 2021 года и с тех пор управляет ею из столицы Ухватск. Несмотря на низкий IQ, он успешно руководит страной благодаря поддержке Жёлтого Джорджа и других союзников.
-                        </p>
-                        <h4 class="text-xl font-semibold text-gray-700 mb-3">Интересные факты</h4>
-                        <ul class="space-y-2 text-gray-600 mb-6">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                <span>Избегает Оранжевого Джорджа из-за его любви к моркови.</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                <span>Его любимые красные яблоки выращиваются в Яблочной области.</span>
-                            </li>
-                        </ul>
-                        <a href="index.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
-                            Вернуться на главную
-                        </a>
+                <h2 class="text-3xl font-bold">Синий Джордж</h2>
+                <p class="text-blue-100">Президент Эпланда</p>
+            </div>
+            <div class="george-body">
+                <div class="george-info">
+                    <h3>Возраст:</h3>
+                    <p>6 лет</p>
+                </div>
+                <div class="george-info">
+                    <h3>Любит:</h3>
+                    <p class="flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Красные яблоки</p>
+                </div>
+                <div class="george-info">
+                    <h3>Боится:</h3>
+                    <p class="flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Морковки</p>
+                </div>
+                <div class="george-info">
+                    <h3>IQ:</h3>
+                    <p class="flex items-center"><i class="fas fa-brain text-blue-500 mr-2"></i> 15.2</p>
+                </div>
+
+                <div class="apple">
+                    <div class="apple-leaf"></div>
+                </div>
+
+                <div class="carrot" style="transform: rotate(180deg); margin-top: -30px; opacity: 0.7;">
+                    <div class="carrot-leaves" style="transform: rotate(180deg);"></div>
+                </div>
+
+                <div class="george-info">
+                    <h3>Описание:</h3>
+                    <p>Синий Джордж - президент Эпланда. Несмотря на самый низкий IQ среди всех Джорджей (всего 15.2), он иногда проявляет удивительную мудрость. Его любимая еда - красные яблоки, и он всегда носит синий галстук, который символизирует его статус. Синий Джордж - единственная работающая свинка в Эпланде. Он патологически боится морковок и всегда держится от них подальше.</p>
+                </div>
+
+                <div class="george-info">
+                    <h3>Президентские достижения:</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>Подписал закон о запрете морковок в президентском дворце</li>
+                        <li>Организовал "День яблока" (проспал его, съев все яблоки заранее)</li>
+                        <li>Принял важное решение о строительстве яблочного сада вместо морковных полей</li>
+                        <li>Назначил Жёлтого Джорджа главным советником (лучший выбор)</li>
+                        <li>Установил рекорд по количеству съеденных яблок за один день (17 штук)</li>
+                        <li>Придумал лозунг "Эпланд - страна яблок, а не морковок!"</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3>Интересные факты:</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>Синий Джордж - единственная работающая свинка в Эпланде</li>
+                        <li>Он обожает красные яблоки и может съесть их до 10 штук в день</li>
+                        <li>Его любимая фраза: "Морковки - это заговор против яблок!"</li>
+                        <li>Всегда носит синий галстук, подаренный ему Желтым Джорджем</li>
+                        <li>Боится морковок настолько, что однажды сбежал с заседания из-за морковного салата</li>
+                        <li>Иногда проявляет неожиданную мудрость, удивляя всех вокруг</li>
+                        <li>Его любимое место - президентский яблочный сад</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3>Цитаты:</h3>
+                    <div class="space-y-3">
+                        <blockquote class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-700">
+                            "Главное в управлении - это умение отличать яблоки от морковок!"
+                        </blockquote>
+                        <blockquote class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-700">
+                            "Яблоки - это не просто фрукты, это символ нашей нации! А морковки... бррр!"
+                        </blockquote>
+                        <blockquote class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-700">
+                            "Когда не знаешь, что сказать, лучше промолчать и съесть яблоко."
+                        </blockquote>
+                        <blockquote class="border-l-4 border-blue-500 pl-4 py-2 italic text-gray-700">
+                            "Президентство - это не работа, это образ жизни! Главное - избегать морковок!"
+                        </blockquote>
                     </div>
                 </div>
+
+                <div class="george-info">
+                    <h3>Мудрые моменты:</h3>
+                    <p>Несмотря на свой низкий IQ (15.2) и патологическую боязнь морковок, Синий Джордж иногда проявляет удивительную мудрость:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700 mt-2">
+                        <li>Однажды предсказал падение морковки с дерева за секунду до этого (и сбежал)</li>
+                        <li>Придумал систему ротации яблок в президентском саду (чтобы не было морковок)</li>
+                        <li>Решил конфликт между Зелёным и Белым Джорджем, предложив им есть только яблоки</li>
+                        <li>Организовал первую в Эпланде конференцию по яблочным технологиям (морковки запрещены)</li>
+                        <li>Принял закон о защите яблонь от морковных вредителей</li>
+                        <li>Изобрёл способ определять морковки по запаху на расстоянии 10 метров</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3>Президентский распорядок дня:</h3>
+                    <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+                        <li>8:00 - Пробуждение и проверка на наличие морковок в спальне</li>
+                        <li>8:30 - Завтрак (5 красных яблок, проверенных на отсутствие морковного вкуса)</li>
+                        <li>9:00 - Утреннее заседание правительства (с обязательной проверкой на морковки)</li>
+                        <li>10:30 - Перерыв на яблоко (с тщательной проверкой)</li>
+                        <li>11:00 - Подписание документов (только если они не пахнут морковкой)</li>
+                        <li>12:30 - Обед (яблочный пирог, проверенный 3 раза)</li>
+                        <li>13:30 - Послеобеденный сон (с яблоком под подушкой для защиты от морковок)</li>
+                        <li>15:00 - Встреча с советниками (все входы проверены на морковки)</li>
+                        <li>16:30 - Прогулка по президентскому яблочному саду (с охранником от морковок)</li>
+                        <li>18:00 - Ужин (только яблочные блюда)</li>
+                        <li>19:00 - Вечернее телевидение (смотрит только про яблоки)</li>
+                        <li>21:00 - Сон (с ночным фонариком в форме яблока для защиты от морковок)</li>
+                    </ol>
+                </div>
+
+                <a href="index.html" class="back-button block text-center mt-8">
+                    Вернуться к списку Джорджей
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 </body>
 </html>

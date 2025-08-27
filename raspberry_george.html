@@ -7,22 +7,328 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
+        :root {
+            --pig-skin: #ffd1dc;
+            --bg-light: #f8f9fa;
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --raspberry: #e879f9;
+            --gold: #f59e0b;
+        }
         body {
-            font-family: 'Rubik', sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Comfortaa', 'Rubik', sans-serif;
+            background-color: var(--bg-light);
             color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        .george-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .george-header {
+            background: linear-gradient(135deg, var(--raspberry), #db2777);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .george-avatar {
+            background-color: var(--pig-skin);
+            border: 3px solid white;
+            position: relative;
+        }
+        .george-info {
+            margin-bottom: 15px;
+        }
+        .george-info h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #4b5563;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .back-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .section-title {
+            font-family: 'Comfortaa', sans-serif;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        /* Специальные стили для Малинового Джорджа */
+        .ironman-suit {
+            position: relative;
+            width: 120px;
+            height: 150px;
+            margin: 20px auto;
+        }
+        .suit-body {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--raspberry), #c026d3);
+            border-radius: 20px 20px 10px 10px;
+            border: 2px solid #a855f7;
+        }
+        .suit-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--raspberry), #be185d);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            border: 2px solid #a855f7;
+        }
+        .suit-eyes {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 15px;
+            background: #1e293b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 5px;
+        }
+        .eye {
+            width: 8px;
+            height: 8px;
+            background: #f8fafc;
+            border-radius: 50%;
+        }
+        .suit-arms {
+            position: absolute;
+            top: 30px;
+            left: 5px;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--raspberry), #c026d3);
+            border-radius: 10px;
+            border: 2px solid #a855f7;
+        }
+        .suit-arms.right {
+            left: auto;
+            right: 5px;
+        }
+        .suit-legs {
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            width: 20px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--raspberry), #c026d3);
+            border-radius: 5px;
+            border: 2px solid #a855f7;
+        }
+        .suit-legs.right {
+            left: auto;
+            right: 20px;
+        }
+        .suit-chest {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 30px;
+            background: #1e293b;
+            border-radius: 50%;
+            border: 2px solid #a855f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .arc-reactor {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        .village-house {
+            position: relative;
+            width: 100px;
+            height: 80px;
+            background: #f59e0b;
+            border-radius: 5px;
+            margin: 20px auto;
+        }
+        .house-roof {
+            position: absolute;
+            top: -15px;
+            left: -5px;
+            width: 0;
+            height: 0;
+            border-left: 55px solid transparent;
+            border-right: 55px solid transparent;
+            border-bottom: 20px solid #ef4444;
+        }
+        .house-window {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
+        .house-door {
+            position: absolute;
+            bottom: 10px;
+            left: 30px;
+            width: 20px;
+            height: 30px;
+            background: #1e40af;
+            border-radius: 2px;
+        }
+        .house-chimney {
+            position: absolute;
+            top: -5px;
+            right: 10px;
+            width: 10px;
+            height: 20px;
+            background: #64748b;
+        }
+
+        .money-stack {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .money-bill {
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .quote-bubble {
+            position: relative;
+            background: #f3f4f6;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px dashed var(--raspberry);
+        }
+        .quote-bubble:before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #f3f4f6;
+        }
+        .quote-bubble:after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: 20px;
+            width: 15px;
+            height: 15px;
+            background: var(--raspberry);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .malinka-logo {
+            position: relative;
+            width: 80px;
+            height: 40px;
+            background: var(--raspberry);
+            border-radius: 20px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .malinka-logo:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            width: 15px;
+            height: 15px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+        .malinka-logo:after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            width: 15px;
+            height: 15px;
+            background: #10b981;
+            border-radius: 50%;
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg">
+<body>
+    <header class="header shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
                     <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mr-4 shadow-lg">
-                        <i class="fas fa-apple-alt text-3xl text-purple-600"></i>
+                        <i class="fas fa-piggy-bank text-3xl" style="color: var(--pig-skin);"></i>
                     </div>
                     <div>
                         <h1 class="text-2xl font-bold">Малиновый Джордж</h1>
@@ -35,54 +341,222 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <section class="py-16">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-1/3">
-                    <div class="bg-white rounded-xl overflow-hidden shadow-lg">
-                        <div class="bg-pink-500 p-4 text-white text-center">
-                            <h3 class="text-2xl font-bold">Малиновый Джордж</h3>
-                            <p class="text-pink-100">Губернатор Малиновой области</p>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex justify-center mb-4">
-                                <div class="w-32 h-32 bg-pink-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-6xl text-pink-500"></i>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Любит:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-heart text-red-500 mr-2"></i> Малину</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Боится:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i> Лавы</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Особенности:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-robot text-purple-500 mr-2"></i> Костюм Железного человека (малиновый)</p>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-700">Автор:</h4>
-                                    <p class="text-gray-600 flex items-center"><i class="fas fa-pencil-alt text-purple-500 mr-2"></i> Бобр</p>
-                                </div>
-                            </div>
+    <div class="container mx-auto px-4 py-10">
+        <div class="george-card">
+            <div class="george-header">
+                <div class="flex justify-center mb-4">
+                    <div class="w-32 h-32 george-avatar rounded-full flex items-center justify-center">
+                        <i class="fas fa-piggy-bank text-4xl" style="color: var(--pig-skin);"></i>
+                        <div class="absolute -top-2 -right-2 w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-astronaut text-raspberry"></i>
                         </div>
                     </div>
                 </div>
-                <div class="lg:w-2/3">
-                    <div class="bg-white rounded-xl p-6 shadow-lg">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Биография</h3>
-                        <p class="text-gray-600 mb-6">Малиновый Джордж — губернатор Малиновой области. Он любит малину, боится лавы и носит малиновый костюм Железного человека.</p>
-                        <a href="index.html" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
-                            Вернуться на главную
-                        </a>
+                <h2 class="text-2xl font-bold">Малиновый Джордж</h2>
+                <p class="text-raspberry-100">Губернатор Малиновска</p>
+            </div>
+            <div class="p-8">
+                <div class="george-info">
+                    <h3 class="section-title">Общая информация</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-purple-500 mr-2"></i>
+                            <span><strong>Место жительства:</strong> Малиновск (деревня)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-user-tie text-blue-500 mr-2"></i>
+                            <span><strong>Статус:</strong> Безработный</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-heart text-red-500 mr-2"></i>
+                            <span><strong>Любит:</strong> Малину</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                            <span><strong>Боится:</strong> Лавы</span>
+                        </div>
                     </div>
                 </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Биография</h3>
+                    <p class="text-gray-700">
+                        Малиновый Джордж - один из самых богатых жителей Эпланда, несмотря на то, что он безработный.
+                        Он живёт в деревне Малиновск, где у него есть собственный малиновый костюм в стиле Железного Человека,
+                        полностью рабочий. Малиновый Джордж не такой тупой, как другие Джорджи - его ум позволяет ему
+                        эффективно управлять своими финансами и технологиями.
+                    </p>
+
+                    <div class="ironman-suit">
+                        <div class="suit-head">
+                            <div class="suit-eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                            </div>
+                        </div>
+                        <div class="suit-body">
+                            <div class="suit-chest">
+                                <div class="arc-reactor"></div>
+                            </div>
+                        </div>
+                        <div class="suit-arms"></div>
+                        <div class="suit-arms right"></div>
+                        <div class="suit-legs"></div>
+                        <div class="suit-legs right"></div>
+                    </div>
+
+                    <p class="text-gray-700 mt-4">
+                        Малиновый Джордж известен своим малиновым костюмом, который он сам сконструировал.
+                        Костюм полностью функционален и позволяет ему летать, хотя он редко им пользуется.
+                        Его главное занятие - наслаждаться жизнью в своей деревне и иногда демонстрировать
+                        возможности своего костюма другим Джорджам.
+                    </p>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Малиновск</h3>
+                    <p class="text-gray-700">
+                        Малиновск - небольшая деревня в Эпланде, где живёт Малиновый Джордж. Это самое богатое
+                        поселение в стране, несмотря на свой скромный размер. Деревня славится своими малиновыми
+                        плантациями и уникальной архитектурой.
+                    </p>
+
+                    <div class="village-house">
+                        <div class="house-roof"></div>
+                        <div class="house-window"></div>
+                        <div class="house-door"></div>
+                        <div class="house-chimney"></div>
+                    </div>
+
+                    <div class="malinka-logo">Малиновск</div>
+
+                    <p class="text-gray-700 mt-4">
+                        Малиновый Джордж гордится своей деревней и часто приглашает других Джорджей в гости.
+                        Он организовал в Малиновске уникальную инфраструктуру, которая позволяет деревне быть
+                        самодостаточной и процветающей.
+                    </p>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Технологические достижения</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>Создал полностью рабочий малиновый костюм в стиле Железного Человека</li>
+                        <li>Разработал систему автоматического сбора малины в Малиновске</li>
+                        <li>Изобрёл устройство для мгновенного приготовления малинового варенья</li>
+                        <li>Сконструировал летающий аппарат для перевозки малины</li>
+                        <li>Создал энергетическую систему, работающую на малиновом соке</li>
+                        <li>Разработал программу для автоматического управления финансами деревни</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Финансовые успехи</h3>
+                    <p class="text-gray-700">
+                        Несмотря на то, что Малиновый Джордж официально безработный, он является одним из самых богатых
+                        жителей Эпланда. Его состояние основано на нескольких источниках дохода:
+                    </p>
+
+                    <div class="money-stack">
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                        <div class="money-bill">$</div>
+                    </div>
+
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700 mt-4">
+                        <li>Доходы от малиновых плантаций в Малиновске</li>
+                        <li>Патенты на технологические изобретения</li>
+                        <li>Инвестиции в различные проекты Эпланда</li>
+                        <li>Туристический бизнес (экскурсии по Малиновску)</li>
+                        <li>Продажа малинового варенья и других продуктов</li>
+                        <li>Лицензирование технологий малинового костюма</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Интересные факты</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>Малиновый Джордж может управлять своим костюмом, даже не надевая его</li>
+                        <li>Он единственный Джордж, у которого есть собственный герб (малина в круге)</li>
+                        <li>Его любимое блюдо - малиновое варенье с золотой ложкой</li>
+                        <li>Малиновый Джордж боится лавы, потому что она может расплавить его костюм</li>
+                        <li>Он организовал в Малиновске первый в Эпланде малиновый фестиваль</li>
+                        <li>Его костюм может стрелять малиновым соком (хотя это бесполезно)</li>
+                        <li>Малиновый Джордж однажды выиграл конкурс красоты среди свинок</li>
+                        <li>Он коллекционирует редкие сорта малины со всего Эпланда</li>
+                    </ul>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Цитаты</h3>
+
+                    <div class="quote-bubble">
+                        <p class="text-gray-700 italic">
+                            "Мой костюм не просто малиновый - он технологичный!"
+                        </p>
+                    </div>
+
+                    <div class="quote-bubble">
+                        <p class="text-gray-700 italic">
+                            "Зачем работать, если можно изобретать и жить в Малиновске?"
+                        </p>
+                    </div>
+
+                    <div class="quote-bubble">
+                        <p class="text-gray-700 italic">
+                            "Лава - это единственное, что может испортить мой идеальный день."
+                        </p>
+                    </div>
+
+                    <div class="quote-bubble">
+                        <p class="text-gray-700 italic">
+                            "Малиновск - это не просто деревня, это стиль жизни!"
+                        </p>
+                    </div>
+
+                    <div class="quote-bubble">
+                        <p class="text-gray-700 italic">
+                            "Я не богатый, я просто правильно распоряжаюсь своими малиновыми активами."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="george-info">
+                    <h3 class="section-title">Личностные качества</h3>
+                    <p class="text-gray-700">
+                        Малиновый Джордж - уникальная личность среди всех Джорджей. В отличие от большинства своих
+                        глупых собратьев, он обладает развитым интеллектом (140 IQ), что позволяет ему эффективно
+                        управлять своими финансами и технологиями. Он не просто богатый - он умный и предприимчивый.
+                    </p>
+                    <p class="text-gray-700 mt-4">
+                        Его главные черты характера:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700 mt-2">
+                        <li>Предприимчивость - всегда ищет новые возможности для бизнеса</li>
+                        <li>Творческий подход - создаёт уникальные изобретения</li>
+                        <li>Щедрость - помогает другим Джорджам (когда не ленится)</li>
+                        <li>Самоуверенность - знает, что его костюм делает его особенным</li>
+                        <li>Любознательность - всегда интересуется новыми технологиями</li>
+                        <li>Патриотизм - гордится своей деревней Малиновск</li>
+                    </ul>
+                    <p class="text-gray-700 mt-4">
+                        Несмотря на свой высокий интеллект, Малиновый Джордж предпочитает беззаботную жизнь в своей
+                        деревне. Он не стремится к власти или славе - ему достаточно комфортной жизни в Малиновске,
+                        где он может наслаждаться своими изобретениями и малиной.
+                    </p>
+                </div>
+
+                <a href="index.html" class="back-button block text-center mt-8">
+                    Вернуться к списку Джорджей
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 </body>
 </html>
